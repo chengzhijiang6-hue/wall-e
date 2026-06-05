@@ -35,7 +35,7 @@ hermes
 - **嵌入模型**: DashScope text-embedding-v3
 
 ### 网络配置
-- 公司代理: `http://YOUR_PROXY:3128`
+- 公司代理: ``
 - 本地服务不走代理
 
 ### 记忆系统
