@@ -1,0 +1,62 @@
+# PLMS 物化视图状态分析 (2026-05-27)
+
+## 状态汇总
+
+| 状态 | 数量 | 说明 |
+|------|------|------|
+| FRESH | 5 | 正常运行 |
+| UNKNOWN | 17 | 待确认 |
+| NEEDS_COMPILE | 53 | 需要刷新/编译 |
+| STALE | 3 | 过期（数据陈旧） |
+| COMPILATION_ERROR | 8 | 编译失败，需修复 |
+
+## FRESH (正常) - 5个
+
+- CB$CUBE_PRODUCT (2026-05-27 16:37:38)
+- CB$CUBE_TARGET (2026-05-27 16:37:08)
+- CB$PRODUCT_LINE_PRODUCT_LINE (2026-05-26 19:58:35)
+- LOI_MV_WH_CAPACITY_DETAIL_SD (2026-05-27 16:41:51)
+- LOI_V_WH_OVERVIEW (2026-05-27 14:27:51)
+
+## COMPILATION_ERROR (严重) - 8个
+
+| 名称 | 最后刷新 | 可能原因 |
+|------|---------|---------|
+| CB$CUBE_ACTUAL_BLOCK_STOCK | 2026-05-27 09:02:44 | 源表结构变更 |
+| CB$CUBE_ACTUAL_STOCK | 2026-05-27 09:02:47 | 源表结构变更 |
+| CB$PRODUCT_H_PRODUCT | 2026-05-27 09:02:46 | 源表结构变更 |
+| LOI_V_ASN_REWORK | 2021-07-10 14:07:51 | 依赖视图失效 |
+| LOI_V_AWT_KWT_INV_SUM_UPDATE | 2021-08-29 15:22:38 | 依赖视图失效 |
+| LOP3_ASN_DATA | 2021-07-10 14:07:58 | 长期未刷新 |
+| MVIEW_MASTER_TEST | 2022-05-30 15:52:03 | 测试视图 |
+| M_V_INVENTORY_KPITREE_LOP3BASE | 2021-07-10 14:07:49 | 长期未刷新 |
+
+## STALE (过期) - 3个
+
+| 名称 | 最后刷新 | 过期时长 |
+|------|---------|---------|
+| CB$CUBE_LZT | 2024-12-30 19:00:13 | 18个月 |
+| CB$CUBE_OUTPUT | 2021-07-13 15:22:37 | 5年 |
+| CB$LOCATION_PROCESS_AREA | 2022-09-02 13:08:53 | 4年 |
+
+## NEEDS_COMPILE (需刷新) - 53个
+
+关键业务视图：
+- CB$CUBE_AGR (2026-05-27 16:37:25)
+- CB$CUBE_LTAP_LTAK_POE (2026-05-27 16:34:30)
+- CB$CUBE_MSEG (2026-05-27 16:37:39)
+- CB$CUBE_SUPPLIER_OTD (2026-05-26 19:59:05)
+- CB$CUBE_WORKHOUR (2026-05-27 16:36:17)
+- LOI_MV_AUTOGR_PPU (2026-05-27 16:35:30)
+- LOI_MV_DE_MATERIAL_FLOW (2026-05-26 19:50:33)
+- LOI_MV_KLT_RTP_DETAILS (2026-05-26 19:16:38)
+- LOI_MV_OPEN_TO_DETAILS (2026-05-27 16:39:18)
+- LOI_MV_TO_HOUR_HISTORY (2026-05-27 16:37:49)
+- LOI_V_WH_PRODUCT (2026-05-27 15:20:00)
+
+## 排错建议
+
+1. **COMPILATION_ERROR 视图**：检查依赖对象是否失效，尝试重新编译
+2. **STALE 视图**：检查刷新作业是否运行，手动刷新测试
+3. **NEEDS_COMPILE 视图**：执行 `DBMS_MVIEW.REFRESH('视图名', 'C')` 刷新
+4. **UNKNOWN 视图**：可能是普通视图被误认为物化视图，检查 `user_views`
