@@ -1,0 +1,74 @@
+# 物化视图定义收集记录 (2026-05-27)
+
+## 收集方式
+
+从 Oracle LOGPOE 用户执行 `DBMS_METADATA.GET_DDL()` 查询，获取物化视图 DDL 定义。
+
+## 已收集的物化视图
+
+### 核心业务物化视图
+
+| 名称 | 刷新策略 | 用途 |
+|------|---------|------|
+| LOI_MV_OPEN_TO_DETAILS | FORCE, 每小时 | Open TO 详情（20+ UNION ALL） |
+| LOI_MV_DE_MATERIAL_FLOW | COMPLETE, 每天 | DE 物料流分类 |
+| LOI_MV_WH_CAPACITY_DETAIL_SD | COMPLETE, 每小时 | 仓库容量明细 |
+| LOI_MV_TO_HOUR_HISTORY | COMPLETE, 每小时 | TO 小时统计 |
+| LOI_MV_AUTOGR_PPU | COMPLETE, 每小时 | 自动化 GR PPU |
+| LOI_MV_AUTORACK_PPU | COMPLETE, 每小时 | 自动化 Rack PPU |
+| LOI_MV_KLT_RTP_DETAILS | FORCE, 每天 | KLT/RTP 详情 |
+
+### LOI_V_ 物化视图
+
+| 名称 | 刷新策略 | 用途 |
+|------|---------|------|
+| LOI_V_WH_OVERVIEW | FRESH ✓ | 仓库概览 |
+| LOI_V_WH_FUTURE_TREND | FORCE, 每天 | 仓库未来趋势 |
+| LOI_V_WH_FUTURE_TREND_DETAIL | FORCE, 每天 | 仓库未来趋势明细 |
+| LOI_V_WH_INVENTORY_ALL_FCST | COMPLETE, 每天 | 库存预测 |
+| LOI_V_SUPPLIER_OTD | FORCE | 供应商 OTD |
+| LOI_V_SUPPLIER_OTD_M | COMPLETE | 月度 OTD |
+| LOI_V_SUPPLIER_OTD_Y | COMPLETE | 年度 OTD |
+| LOI_V_SUPPLYCHAIN_MMSL | COMPLETE | 供应链 MMSL |
+| LOI_V_SUPPLYCHAIN_SDSL | COMPLETE | 供应链 SDSL |
+| LOI_V_BLOCKED_STOCK_M | FORCE, 每小时 | 冻结库存 |
+| LOI_V_DEAD_STOCK | COMPLETE, 每小时 | 死库存 |
+| LOI_V_OCCUPATION_RATE | COMPLETE, 每小时 | 占用率 |
+| LOI_V_LOM_PICK_TO | FORCE, 每小时 | 拣货 TO |
+| LOI_V_LOP_KPI | COMPLETE, 每天 | LOP KPI |
+| LOI_V_MATERIAL_COVERAGE_COUNT | COMPLETE, 每天 | 物料覆盖率 |
+| LOI_V_MATERIAL_OUTPUT | FORCE, 每天 | 物料产出 |
+| LOI_V_OUTPUT_STOCK | COMPLETE, 每天 | 产出库存 |
+| LOI_V_OVERDELIVERY | FORCE, 每天 | 超额交付 |
+| LOI_V_OVER_SHELF_LIFE | COMPLETE, 每天 | 超保质期 |
+| LOI_V_PACKAGE_COST | COMPLETE, 每天 | 包装成本 |
+| LOI_V_RBCD_BOM | FORCE, 每天 | RBCD BOM |
+| LOI_V_SCC_INVENTORY_ALL | COMPLETE | SCC 库存 |
+| LOI_V_SOURCE_PLAN_CHANGE_DTL | NEVER REFRESH ⚠️ | 采购计划变更 |
+| LOI_V_STOCK_STATUS_DETAIL | COMPLETE, 每天 | 库存状态 |
+| LOI_V_COVERAGE_LV2 | COMPLETE, 每天 | 覆盖率 L2 |
+| LOI_V_ASN_REWORK | COMPILATION_ERROR 🔴 | ASN 返工 |
+| LOI_V_AWT_KWT_INV_SUM | COMPLETE | AWT/KWT 库存 |
+| LOI_V_BASE_SUPPLIER_OTD_201911 | COMPLETE, 每天 | OTD 基础数据 |
+
+## 失效物化视图 (COMPILATION_ERROR)
+
+- CB$CUBE_ACTUAL_BLOCK_STOCK
+- CB$CUBE_ACTUAL_STOCK
+- CB$PRODUCT_H_PRODUCT
+- LOI_V_ASN_REWORK
+- LOI_V_AWT_KWT_INV_SUM_UPDATE
+- LOP3_ASN_DATA
+- MVIEW_MASTER_TEST
+- M_V_INVENTORY_KPITREE_LOP3BASE
+
+## STALE 物化视图
+
+- CB$CUBE_LZT — 2024-12-30 (18个月)
+- CB$CUBE_OUTPUT — 2021-07-13 (5年)
+- CB$LOCATION_PROCESS_AREA — 2022-09-02 (4年)
+
+## 未收集
+
+- 普通视图定义 (LOI_V_* 非物化视图) — 需要单独查询
+- 存储过程/函数代码 — 需要单独查询
