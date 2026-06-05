@@ -1,0 +1,16 @@
+# 敏感信息
+.env
+*.bak
+*.log
+*.db
+
+# 系统文件
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+
+# 临时文件
+tmp/
+temp/
+*.tmp
